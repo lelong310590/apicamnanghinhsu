@@ -12,9 +12,15 @@ export default class PostsController {
         const page = parseInt(request.input('page', 1))
         const limit = parseInt(request.input('limit', 10))
         const order = request.input('sort', "asc")
-        const post = await Post.query().preload('category').select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id']).whereHas('category', (query) => {
-            query.where('category_id', categoryId)
-        }).orderBy('created_at', order).paginate(page, limit)
+        const post = await Post.query()
+            .preload('category')
+            .select([
+                'id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id',
+                'release_date', 'effect_date'
+            ])
+            .whereHas('category', (query) => {
+                query.where('category_id', categoryId)
+            }).orderBy('created_at', order).paginate(page, limit)
         if (post.length != 0) {
             return response.status(200).json(
                 new ResponseFormat(
@@ -45,7 +51,8 @@ export default class PostsController {
                 .preload('category')
                 .select([
                     'id', 'name', 'description', 'status', 'author_id', 'is_featured',
-                    'image', 'views', 'created_at', 'updated_at', 'type_id'
+                    'image', 'views', 'created_at', 'updated_at', 'type_id',
+                    'release_date', 'effect_date'
                 ])
                 .where('is_featured', 1)
                 .whereHas('category', (query) => {
@@ -58,7 +65,8 @@ export default class PostsController {
             post = await Post.query()
                 .select([
                     'id', 'name', 'description', 'status', 'author_id', 'is_featured',
-                    'image', 'views', 'created_at', 'updated_at', 'type_id'
+                    'image', 'views', 'created_at', 'updated_at', 'type_id',
+                    'release_date', 'effect_date'
                 ])
                 .where('is_featured', 1)
                 .limit(5)
@@ -91,7 +99,16 @@ export default class PostsController {
         const page = parseInt(request.input('page', 1))
         const limit = parseInt(request.input('limit', 10))
         const order = request.input('sort', "asc")
-        const post = await Post.query().preload('category').preload('author').preload('tag').preload('type').select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id']).whereHas('category', (query) => {
+        const post = await Post.query()
+            .preload('category')
+            .preload('author')
+            .preload('tag')
+            .preload('type')
+            .select([
+                'id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id',
+                'release_date', 'effect_date'
+            ])
+            .whereHas('category', (query) => {
             query.where('category_id', catId)
         }).orderBy('created_at', order).paginate(page, limit)
         return response.status(200).json(
@@ -114,7 +131,18 @@ export default class PostsController {
         const page = parseInt(request.input('page', 1))
         const limit = parseInt(request.input('limit', 10))
         const order = request.input('sort', "asc")
-        const post = await Post.query().preload('category').preload('author').preload('tag').preload('type').select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id']).where('type_id', typeId).orderBy('created_at', order).paginate(page, limit)
+        const post = await Post.query()
+            .preload('category')
+            .preload('author')
+            .preload('tag')
+            .preload('type')
+            .select([
+                'id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id',
+                'release_date', 'effect_date'
+            ])
+            .where('type_id', typeId)
+            .orderBy('created_at', order)
+            .paginate(page, limit)
         return response.status(200).json(
             post.length != 0 ?
                 new ResponseFormat(
@@ -135,9 +163,18 @@ export default class PostsController {
         const page = parseInt(request.input('page', 1))
         const limit = parseInt(request.input('limit', 10))
         const order = request.input('sort', "asc")
-        const post = await Post.query().preload('category').preload('author').preload('tag').preload('type').select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id']).whereHas('tag', (query) => {
-            query.where('tag_id', tagId)
-        }).orderBy('created_at', order).paginate(page, limit)
+        const post = await Post.query()
+            .preload('category')
+            .preload('author')
+            .preload('tag')
+            .preload('type')
+            .select([
+                'id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id',
+                'release_date', 'effect_date'
+            ])
+            .whereHas('tag', (query) => {
+                query.where('tag_id', tagId)
+            }).orderBy('created_at', order).paginate(page, limit)
         return response.status(200).json(
             post.length != 0 ?
                 new ResponseFormat(
@@ -155,7 +192,12 @@ export default class PostsController {
     //controller get Post details
     public async getPostDetails({request, response}: HttpContextContract) {
         const postId = parseInt(request.input('postId'))
-        const post = await Post.query().preload('author').preload('category').preload('tag').preload('type').select(["*", Database.raw(`(SELECT min(id) from posts where id >${postId}) as next_id, (SELECT max(id) from posts where id <${postId}) as prev_id`)]).where('id', postId)
+        const post = await Post.query()
+            .preload('author')
+            .preload('category')
+            .preload('tag')
+            .preload('type')
+            .select(["*", Database.raw(`(SELECT min(id) from posts where id >${postId}) as next_id, (SELECT max(id) from posts where id <${postId}) as prev_id`)]).where('id', postId)
         if (post.length != 0) {
             return response.status(200).json(
                 new ResponseFormat(
@@ -244,7 +286,7 @@ export default class PostsController {
         if (catId && typeId) {
             const posts = await Post.query()
                 .preload('category')
-                .select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id'])
+                .select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
                 .where('type_id', typeId)
                 .whereHas('category', (query) => {
                     query.where('category_id', catId);
@@ -260,7 +302,7 @@ export default class PostsController {
         if (catId && typeId == null) {
             const posts = await Post.query()
                 .preload('category')
-                .select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id'])
+                .select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
                 .whereHas('category', (query) => {
                     query.where('category_id', catId);
                 })
@@ -271,7 +313,7 @@ export default class PostsController {
             if (posts.length == 0) {
                 const posts = await Post.query()
                     .preload('category')
-                    .select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id'])
+                    .select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
                     .whereHas('category', (query) => {
                         query.where('category_id', catId);
                     })
@@ -287,7 +329,7 @@ export default class PostsController {
         if (typeId && catId == null) {
             const posts = await Post.query()
                 .preload('type')
-                .select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id'])
+                .select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
                 .where('type_id', typeId)
                 // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
                 .whereILike('search_name', `%${searchName}%`)
@@ -298,7 +340,7 @@ export default class PostsController {
                 .json(new ResponseFormat(posts, true, 'Tìm kiếm thành công'));
         }
         if (catId == null && typeId == null) {
-            const posts = await Post.query().select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id'])
+            const posts = await Post.query().select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
                 // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
                 .whereILike('search_name', `%${searchName}%`)
                 .orderBy('created_at', order).paginate(page, limit)
