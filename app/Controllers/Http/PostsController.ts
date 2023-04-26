@@ -271,6 +271,7 @@ export default class PostsController {
         const limit = request.input('limit', 10)
         const content = request.input('content')
         const order = request.input('sort', "asc")
+        const searchType = request.input('searchType', 'normal')
         const searchName = this.removeVietnameseTones(content)
         // const posts = await Post.query().select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id'])
         // const result = datasetGenerate({
@@ -284,34 +285,42 @@ export default class PostsController {
 
 
         if (catId && typeId) {
-            const posts = await Post.query()
-                .preload('category')
-                .select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
-                .where('type_id', typeId)
-                .whereHas('category', (query) => {
-                    query.where('category_id', catId);
-                })
-                // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
-                .whereILike('search_name', `%${searchName}%`)
-                .orderBy('created_at', order)
-                .paginate(page, limit)
+            let posts = {}
+
+            if (searchType === 'normal') {
+                posts = await Post.query()
+                    .preload('category')
+                    .select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
+                    .where('type_id', typeId)
+                    .whereHas('category', (query) => {
+                        query.where('category_id', catId);
+                    })
+                    // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
+                    .whereILike('search_name', `%${searchName}%`)
+                    .orderBy('created_at', order)
+                    .paginate(page, limit)
+            } else if (searchType === 'advance') {
+                posts = await Post.query()
+                    .preload('category')
+                    .select(['id', 'name', 'content','description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
+                    .where('type_id', typeId)
+                    .whereHas('category', (query) => {
+                        query.where('category_id', catId);
+                    })
+                    // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
+                    .whereRaw(`REPLACE(\`content\`, '<[^>]*>+', '') LIKE '%${searchName}%'`)
+                    .orderBy('created_at', order)
+                    .paginate(page, limit)
+            }
+
             return response
                 .status(200)
                 .json(new ResponseFormat(posts, true, 'Tìm kiếm thành công'));
         }
         if (catId && typeId == null) {
-            const posts = await Post.query()
-                .preload('category')
-                .select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
-                .whereHas('category', (query) => {
-                    query.where('category_id', catId);
-                })
-                // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
-                .whereILike('search_name', `%${searchName}%`)
-                .orderBy('created_at', order)
-                .paginate(page, limit);
-            if (posts.length == 0) {
-                const posts = await Post.query()
+            let posts = {}
+            if (searchType === 'normal') {
+                posts = await Post.query()
                     .preload('category')
                     .select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
                     .whereHas('category', (query) => {
@@ -321,29 +330,65 @@ export default class PostsController {
                     .whereILike('search_name', `%${searchName}%`)
                     .orderBy('created_at', order)
                     .paginate(page, limit);
+            } else if (searchType === 'advance') {
+                posts = await Post.query()
+                    .preload('category')
+                    .select(['id', 'name','content', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
+                    .whereHas('category', (query) => {
+                        query.where('category_id', catId);
+                    })
+                    // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
+                    .whereRaw(`REPLACE(\`content\`, '<[^>]*>+', '') LIKE '%${searchName}%'`)
+                    .orderBy('created_at', order)
+                    .paginate(page, limit);
             }
+
             return response
                 .status(200)
                 .json(new ResponseFormat(posts, true, 'Tìm kiếm thành công'));
         }
         if (typeId && catId == null) {
-            const posts = await Post.query()
-                .preload('type')
-                .select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
-                .where('type_id', typeId)
-                // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
-                .whereILike('search_name', `%${searchName}%`)
-                .orderBy('created_at', order)
-                .paginate(page, limit);
+            let posts = {}
+            if (searchType === 'normal') {
+                posts = await Post.query()
+                    .preload('type')
+                    .select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
+                    .where('type_id', typeId)
+                    // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
+                    .whereILike('search_name', `%${searchName}%`)
+                    .orderBy('created_at', order)
+                    .paginate(page, limit);
+            } else if (searchType === 'advance') {
+                posts = await Post.query()
+                    .preload('type')
+                    .select(['id', 'name', 'content','description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
+                    .where('type_id', typeId)
+                    // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
+                    .whereRaw(`REPLACE(\`content\`, '<[^>]*>+', '') LIKE '%${searchName}%'`)
+                    .orderBy('created_at', order)
+                    .paginate(page, limit);
+            }
+
             return response
                 .status(200)
                 .json(new ResponseFormat(posts, true, 'Tìm kiếm thành công'));
         }
         if (catId == null && typeId == null) {
-            const posts = await Post.query().select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
-                // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
-                .whereILike('search_name', `%${searchName}%`)
-                .orderBy('created_at', order).paginate(page, limit)
+            let posts = {}
+            if (searchType === 'normal') {
+                posts = await Post.query().select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'])
+                    // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
+                    .whereILike('search_name', `%${searchName}%`)
+                    .orderBy('created_at', order).paginate(page, limit)
+            } else if (searchType === 'advance') {
+                posts = await Post.query()
+                    .select([
+                        'id', 'name', 'description', 'content', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id', 'release_date', 'effect_date'
+                    ])
+                    .whereRaw(`REPLACE(\`content\`, '<[^>]*>+', '') LIKE '%${searchName}%'`)
+                    .orderBy('created_at', order).paginate(page, limit)
+            }
+
             return response.status(200).json(
                 new ResponseFormat(
                     posts,
