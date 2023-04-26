@@ -216,7 +216,7 @@
         },
         "parameters":[
           {
-            "in":"path",
+            "in":"query",
             "name":"catId",
             "schema":{"type":"number"},
             "required":true
@@ -252,7 +252,7 @@
         },
         "parameters":[
           {
-            "in":"path",
+            "in":"query",
             "name":"postId",
             "schema":{"type":"number"},
             "required":true
@@ -348,19 +348,19 @@
         },
         "parameters":[
           {
-            "in":"path",
+            "in":"query",
             "name":"catId",
             "schema":{"type":"number"},
             "required":true
           },
           {
-            "in":"path",
+            "in":"query",
             "name":"page",
             "schema":{"type":"number"},
             "required":false
           },
           {
-            "in":"path",
+            "in":"query",
             "name":"limit",
             "schema":{"type":"number"},
             "required":false
@@ -396,19 +396,19 @@
         },
         "parameters":[
           {
-            "in":"path",
+            "in":"query",
             "name":"typeId",
             "schema":{"type":"number"},
             "required":true
           },
           {
-            "in":"path",
+            "in":"query",
             "name":"page",
             "schema":{"type":"number"},
             "required":false
           },
           {
-            "in":"path",
+            "in":"query",
             "name":"limit",
             "schema":{"type":"number"},
             "required":false
@@ -444,19 +444,19 @@
         },
         "parameters":[
           {
-            "in":"path",
+            "in":"query",
             "name":"tagId",
             "schema":{"type":"number"},
             "required":true
           },
           {
-            "in":"path",
+            "in":"query",
             "name":"page",
             "schema":{"type":"number"},
             "required":false
           },
           {
-            "in":"path",
+            "in":"query",
             "name":"limit",
             "schema":{"type":"number"},
             "required":false
