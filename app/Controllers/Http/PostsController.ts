@@ -272,17 +272,11 @@ export default class PostsController {
         const content = request.input('content')
         const order = request.input('sort', "asc")
         const searchType = request.input('searchType', 'normal')
-        const searchName = this.removeVietnameseTones(content)
-        // const posts = await Post.query().select(['id', 'name', 'description', 'status', 'author_id', 'image', 'views', 'created_at', 'updated_at', 'type_id'])
-        // const result = datasetGenerate({
-        //   array: posts,
-        //   wordSize:2,
-        //   nameId: "id",
-        //   attributes: ["name"]
-        // })
-
-        // return result
-
+        let searchName = this.removeVietnameseTones(content)
+        
+        if (searchType === 'advance') {
+            searchName = searchName.split(" ").join("|");
+        }
 
         if (catId && typeId) {
             let posts = {}
@@ -308,7 +302,7 @@ export default class PostsController {
                         query.where('category_id', catId);
                     })
                     // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
-                    .whereRaw(`REPLACE(\`content\`, '<[^>]*>+', '') LIKE '%${searchName}%'`)
+                    .whereRaw(`search_name REGEXP '${searchName}'`)
                     .orderBy('created_at', order)
                     .paginate(page, limit)
             }
@@ -338,7 +332,7 @@ export default class PostsController {
                         query.where('category_id', catId);
                     })
                     // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
-                    .whereRaw(`REPLACE(\`content\`, '<[^>]*>+', '') LIKE '%${searchName}%'`)
+                    .whereRaw(`search_name REGEXP '${searchName}'`)
                     .orderBy('created_at', order)
                     .paginate(page, limit);
             }
@@ -364,7 +358,7 @@ export default class PostsController {
                     .select(Database.raw('`id`, `name`, `description`, REGEXP_REPLACE(`content`, \'<[^>]*>+\', \'\') as content, `status`, `author_id`, `image`, `views`, `created_at`, `updated_at`, `type_id`, `release_date`, `effect_date`'))
                     .where('type_id', typeId)
                     // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
-                    .whereRaw(`REPLACE(\`content\`, '<[^>]*>+', '') LIKE '%${searchName}%'`)
+                    .whereRaw(`search_name REGEXP '${searchName}'`)
                     .orderBy('created_at', order)
                     .paginate(page, limit);
             }
@@ -383,7 +377,7 @@ export default class PostsController {
             } else if (searchType === 'advance') {
                 posts = await Post.query()
                     .select(Database.raw('`id`, `name`, `description`, REGEXP_REPLACE(`content`, \'<[^>]*>+\', \'\') as content, `status`, `author_id`, `image`, `views`, `created_at`, `updated_at`, `type_id`, `release_date`, `effect_date`'))
-                    .whereRaw(`REPLACE(\`content\`, '<[^>]*>+', '') LIKE '%${searchName}%'`)
+                    .whereRaw(`search_name REGEXP '${searchName}'`)
                     .orderBy('created_at', order).paginate(page, limit)
             }
 
