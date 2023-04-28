@@ -273,9 +273,10 @@ export default class PostsController {
         const order = request.input('sort', "asc")
         const searchType = request.input('searchType', 'normal')
         let searchName = this.removeVietnameseTones(content)
+        let searchNameSplit = []
         
         if (searchType === 'advance') {
-            searchName = searchName.split(" ").join("|");
+            searchNameSplit = searchName.split(" ")
         }
 
         if (catId && typeId) {
@@ -295,14 +296,18 @@ export default class PostsController {
                     .paginate(page, limit)
             } else if (searchType === 'advance') {
                 posts = await Post.query()
+                    .if(searchNameSplit.length > 0, (q) => {
+                        for (let i = 0; i < searchNameSplit.length; i++) {
+                            q.whereILike("search_name", `%${searchNameSplit[i]}%`)
+                        }
+                    })
                     .preload('category')
-                    .select(Database.raw('`id`, `name`, `description`, REGEXP_REPLACE(`content`, \'<[^>]*>+\', \'\') as content, `status`, `author_id`, `image`, `views`, `created_at`, `updated_at`, `type_id`, `release_date`, `effect_date`'))
+                    .select(Database.raw('`id`, `name`, `description`, `content`, `status`, `author_id`, `image`, `views`, `created_at`, `updated_at`, `type_id`, `release_date`, `effect_date`'))
                     .where('type_id', typeId)
                     .whereHas('category', (query) => {
                         query.where('category_id', catId);
                     })
-                    // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
-                    .whereRaw(`search_name REGEXP '${searchName}'`)
+
                     .orderBy('created_at', order)
                     .paginate(page, limit)
             }
@@ -326,15 +331,19 @@ export default class PostsController {
                     .paginate(page, limit);
             } else if (searchType === 'advance') {
                 posts = await Post.query()
+                    .if(searchNameSplit.length > 0, (q) => {
+                        for (let i = 0; i < searchNameSplit.length; i++) {
+                            q.whereILike("search_name", `%${searchNameSplit[i]}%`)
+                        }
+                    })
                     .preload('category')
-                    .select(Database.raw('`id`, `name`, `description`, REGEXP_REPLACE(`content`, \'<[^>]*>+\', \'\') as content, `status`, `author_id`, `image`, `views`, `created_at`, `updated_at`, `type_id`, `release_date`, `effect_date`'))
+                    .select(Database.raw('`id`, `name`, `description`, `content`, `status`, `author_id`, `image`, `views`, `created_at`, `updated_at`, `type_id`, `release_date`, `effect_date`'))
                     .whereHas('category', (query) => {
                         query.where('category_id', catId);
                     })
-                    // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
-                    .whereRaw(`search_name REGEXP '${searchName}'`)
+        
                     .orderBy('created_at', order)
-                    .paginate(page, limit);
+                    .paginate(page, limit)
             }
 
             return response
@@ -354,13 +363,16 @@ export default class PostsController {
                     .paginate(page, limit);
             } else if (searchType === 'advance') {
                 posts = await Post.query()
+                    .if(searchNameSplit.length > 0, (q) => {
+                        for (let i = 0; i < searchNameSplit.length; i++) {
+                            q.whereILike("search_name", `%${searchNameSplit[i]}%`)
+                        }
+                    })
                     .preload('type')
-                    .select(Database.raw('`id`, `name`, `description`, REGEXP_REPLACE(`content`, \'<[^>]*>+\', \'\') as content, `status`, `author_id`, `image`, `views`, `created_at`, `updated_at`, `type_id`, `release_date`, `effect_date`'))
+                    .select(Database.raw('`id`, `name`, `description`, `content`, `status`, `author_id`, `image`, `views`, `created_at`, `updated_at`, `type_id`, `release_date`, `effect_date`'))
                     .where('type_id', typeId)
-                    // .whereRaw(`MATCH(name, content) AGAINST (?)`,[content])
-                    .whereRaw(`search_name REGEXP '${searchName}'`)
                     .orderBy('created_at', order)
-                    .paginate(page, limit);
+                    .paginate(page, limit)
             }
 
             return response
@@ -376,9 +388,17 @@ export default class PostsController {
                     .orderBy('created_at', order).paginate(page, limit)
             } else if (searchType === 'advance') {
                 posts = await Post.query()
-                    .select(Database.raw('`id`, `name`, `description`, REGEXP_REPLACE(`content`, \'<[^>]*>+\', \'\') as content, `status`, `author_id`, `image`, `views`, `created_at`, `updated_at`, `type_id`, `release_date`, `effect_date`'))
-                    .whereRaw(`search_name REGEXP '${searchName}'`)
-                    .orderBy('created_at', order).paginate(page, limit)
+                    .if(searchNameSplit.length > 0, (q) => {
+                        for (let i = 0; i < searchNameSplit.length; i++) {
+                            q.whereILike("search_name", `%${searchNameSplit[i]}%`)
+                        }
+                    })
+                    .select(Database.raw('`id`, `name`, `description`, `status`, `author_id`, `image`, `views`, `created_at`, `updated_at`, `type_id`, `release_date`, `effect_date`'))
+                    .orderBy('created_at', order)
+                    .paginate(page, limit)
+                
+                return posts
+                    
             }
 
             return response.status(200).json(
