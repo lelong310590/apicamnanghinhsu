@@ -3,55 +3,34 @@ import Category from 'App/Models/Category'
 import ResponseFormat from 'App/utils/ResponseFormat'
 import Database from '@ioc:Adonis/Lucid/Database'
 
-let result = []
-
-function sortItems(arr, parentId = 0) {
+function sortArrayByParent(arr, parent_id) {
+	let result = [];
 	for (let i = 0; i < arr.length; i++) {
-		if (arr[i].parent === parentId) {
-			let parentItem = result.find(item => item.id === parentId)
-			
-			if (parentItem !== undefined) {
-				const currentItem = arr[i]
-				let childrens = []
-				childrens.push(currentItem)
-				const newParent = {
-					...parentItem,
-					child: childrens
-				}
-				
-				const index = result.findIndex(item => item.id === newParent.id);
-				
-				if (index !== -1) {
-					result[index] = newParent
-				}
-				
-			} else {
-				result.push(arr[i])
+		if (arr[i].parent_id === parent_id) {
+			let children = sortArrayByParent(arr, arr[i].id);
+			if (children.length > 0) {
+				arr[i].child = children;
 			}
-			
-			sortItems(arr, arr[i].id)
+			result.push(arr[i]);
 		}
 	}
-	
-	return result
+	return result;
 }
 
 
 export default class CategoriesController {
 	public async getCat({request, response}: HttpContextContract) {
-		const category = await Category.query()
-			.select([
-				'name', 'id', 'parent_id'
-			])
-			.where('status', "published")
-			.exec()
+		const category = await Database
+			.query()  // 👈 gives an instance of select query builder
+			.from('categories')
+			.select('id', 'name', 'parent_id')
 		
 		if (category.length != 0) {
-			// const sortedArr = sortItems(category)
+			const sortedArr = sortArrayByParent(category, 0);
 
 			return response.status(200).json(
 				new ResponseFormat(
-					category,
+					sortedArr,
 					true,
 					"Lấy thông tin toàn bộ chủ đề thành công"
 				)
