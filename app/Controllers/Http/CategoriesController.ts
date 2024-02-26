@@ -1,10 +1,10 @@
 import type {HttpContextContract} from '@ioc:Adonis/Core/HttpContext'
-import Category from 'App/Models/Category'
+
 import ResponseFormat from 'App/utils/ResponseFormat'
 import Database from '@ioc:Adonis/Lucid/Database'
 
 function sortArrayByParent(arr, parent_id) {
-	let result = [];
+	let result: any[] = [];
 	for (let i = 0; i < arr.length; i++) {
 		if (arr[i].parent_id === parent_id) {
 			let children = sortArrayByParent(arr, arr[i].id);
@@ -19,7 +19,7 @@ function sortArrayByParent(arr, parent_id) {
 
 
 export default class CategoriesController {
-	public async getCat({request, response}: HttpContextContract) {
+	public async getCat({response}: HttpContextContract) {
 		const category = await Database
 			.query()  // 👈 gives an instance of select query builder
 			.from('categories')
