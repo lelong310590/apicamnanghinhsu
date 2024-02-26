@@ -5,7 +5,10 @@ import * as Admin from 'firebase-admin/auth'
 import * as App from 'firebase-admin'
 import Database from '@ioc:Adonis/Lucid/Database'
 import serviceAccount from '../../utils/serviceAccountKey.json'
-const app = App.initializeApp({ credential: App.credential.cert(serviceAccount) })
+import { ServiceAccount } from 'firebase-admin'
+
+const converted_serviceAccount = serviceAccount as ServiceAccount
+const app = App.initializeApp({ credential: App.credential.cert(converted_serviceAccount) })
 
 export default class UsersController {
   public async updateUser({request, response, params}:HttpContextContract){
