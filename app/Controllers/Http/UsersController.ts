@@ -21,7 +21,7 @@ export default class UsersController {
         new ResponseFormat(
           user,
           true,
-          'Update user thành công'
+          'Cập nhật user thành công'
         )
       )
     }
