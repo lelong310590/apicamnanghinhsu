@@ -44,7 +44,7 @@
    |                     one of the above values.
    |
    */
-   origin: "*",
+   origin: ["https://h5.zdn.vn", "zbrowser://h5.zdn.vn"],
 
    /*
    |--------------------------------------------------------------------------
