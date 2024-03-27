@@ -189,32 +189,66 @@ export default class PostsController {
         )
     }
 
+    /**
+     *
+     * @param request
+     * @param response
+     */
+    public async getPostBySlug({request, response}: HttpContextContract) : Promise<void> {
+        const slug = request.params().slug;
+
+        const post: Post | null = await Post.query().whereHas('slug', (subQuery) => {
+            subQuery.where('reference_type', 'Botble\\Blog\\Models\\Post').where('key', slug)
+        }).first()
+
+        if (post !== null) {
+            return response.status(200).json(
+              new ResponseFormat(
+                post,
+                true,
+                "Lấy thông tin post thành công"
+              )
+            )
+        }
+        return response.status(200).json(
+          new ResponseFormat(
+            null,
+            false,
+            "Không tìm thấy thông tin post"
+          )
+        )
+    }
+
     //controller get Post details
     public async getPostDetails({request, response}: HttpContextContract) {
         const postId = parseInt(request.input('postId'))
-        const post = await Post.query()
+        const post: Post | null = await Post.query()
             .preload('author')
             .preload('category')
             .preload('tag')
             .preload('type')
-            .select(["*", Database.raw(`(SELECT min(id) from posts where id >${postId}) as next_id, (SELECT max(id) from posts where id <${postId}) as prev_id`)]).where('id', postId)
-        if (post.length != 0) {
+            .select(["*", Database.raw(`(SELECT min(id) from posts where id >${postId}) as next_id, (SELECT max(id) from posts where id <${postId}) as prev_id`)]).where('id', postId).first()
+        if (post !== null) {
+
+            await post.merge({
+                view: post.view + 1
+            }).save()
+
             return response.status(200).json(
-                new ResponseFormat(
-                    post,
-                    true,
-                    "Lấy thông tin post thành công"
-                )
-            )
-        } else {
-            return response.status(200).json(
-                new ResponseFormat(
-                    null,
-                    false,
-                    "Không tìm thấy thông tin post"
-                )
+              new ResponseFormat(
+                post,
+                true,
+                "Lấy thông tin post thành công"
+              )
             )
         }
+        return response.status(200).json(
+          new ResponseFormat(
+            null,
+            false,
+            "Không tìm thấy thông tin post"
+          )
+        )
     }
 
     //get next post
@@ -274,7 +308,7 @@ export default class PostsController {
         const searchType = request.input('searchType', 'normal')
         let searchName = this.removeVietnameseTones(content)
         let searchNameSplit = []
-        
+
         if (searchType === 'advance') {
             searchNameSplit = searchName.split(" ")
         }
@@ -341,7 +375,7 @@ export default class PostsController {
                     .whereHas('category', (query) => {
                         query.where('category_id', catId);
                     })
-        
+
                     .orderBy('created_at', order)
                     .paginate(page, limit)
             }
@@ -396,9 +430,9 @@ export default class PostsController {
                     .select(Database.raw('`id`, `name`, `description`, `status`, `author_id`, `image`, `views`, `created_at`, `updated_at`, `type_id`, `release_date`, `effect_date`'))
                     .orderBy('created_at', order)
                     .paginate(page, limit)
-                
+
                 return posts
-                    
+
             }
 
             return response.status(200).json(

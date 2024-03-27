@@ -10,6 +10,7 @@ Route.group(() => {
   Route.get('/category',"PostsController.getPostsByCategory")
   Route.get('/type',"PostsController.getPostsByType")
   Route.get('/tag',"PostsController.getPostsByTag")
+  Route.get('/get-by-slug/:slug', 'PostsController.getPostBySlug')
 
 }
 ).prefix('post')

@@ -23,6 +23,15 @@ export default class Contact extends BaseModel {
   @column()
   public type: string
 
+  @column()
+  public telegram: string
+
+  @column()
+  public org: string
+
+  @column()
+  public userId: number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
