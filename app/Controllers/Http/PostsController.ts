@@ -1,9 +1,9 @@
 import type {HttpContextContract} from '@ioc:Adonis/Core/HttpContext'
 import Database from '@ioc:Adonis/Lucid/Database'
 import Post from 'App/Models/Post'
-import Slug from 'App/Models/Slug'
+
 import ResponseFormat from 'App/utils/ResponseFormat'
-import {datasetGenerate} from "data-search"
+
 
 export default class PostsController {
     //get all post
@@ -45,7 +45,7 @@ export default class PostsController {
         const categoryId = parseInt(request.input('catId'))
         const page = parseInt('page', 1)
         const order = request.input('sort', "desc")
-        let post = {}
+        let post:any[] = []
         if (categoryId) {
             post = await Post.query()
                 .preload('category')
@@ -252,7 +252,7 @@ export default class PostsController {
     }
 
     //get next post
-    public async getNextPost({request, response, params}: HttpContextContract) {
+    public async getNextPost({ response, params}: HttpContextContract) {
         const postId = params.id
         const nextPost = await Post.query().preload('author').preload('category').preload('tag').preload('type').select('*').whereRaw(`id = (SELECT min(id) from posts where id > ${postId})`)
         if (nextPost.length != 0) {
@@ -275,7 +275,7 @@ export default class PostsController {
     }
 
     //get previous post
-    public async getPreviousPost({request, response, params}: HttpContextContract) {
+    public async getPreviousPost({response, params}: HttpContextContract) {
         const postId = params.id
         const nextPost = await Post.query().preload('author').preload('category').preload('tag').preload('type').select('*').whereRaw(`id = (SELECT max(id) from posts where id < ${postId})`)
         if (nextPost.length != 0) {
