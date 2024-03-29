@@ -27,7 +27,7 @@ export default class DocumentRequestsController {
 			new ResponseFormat(
 				requestDocument,
 				true,
-				"Tạo yêu cầu thành công"
+				"Tạo yêu cầu thành công !"
 			)
 		)
 	}
