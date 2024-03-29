@@ -223,18 +223,13 @@ export default class PostsController {
     //controller get Post details
     public async getPostDetails({request, response}: HttpContextContract) {
         const postId = parseInt(request.input('postId'))
-        const post: Post | null = await Post.query()
-            .preload('author')
-            .preload('category')
-            .preload('tag')
-            .preload('type')
-            .select(["*", Database.raw(`(SELECT min(id) from posts where id >${postId}) as next_id, (SELECT max(id) from posts where id <${postId}) as prev_id`)]).where('id', postId).first()
-        if (post !== null) {
-
-            await post.merge({
-                view: post.view + 1
-            }).save()
-
+        const post = await Post.query()
+          .preload('author')
+          .preload('category')
+          .preload('tag')
+          .preload('type')
+          .select(["*", Database.raw(`(SELECT min(id) from posts where id >${postId}) as next_id, (SELECT max(id) from posts where id <${postId}) as prev_id`)]).where('id', postId)
+        if (post.length != 0) {
             return response.status(200).json(
               new ResponseFormat(
                 post,
@@ -242,14 +237,15 @@ export default class PostsController {
                 "Lấy thông tin post thành công"
               )
             )
+        } else {
+            return response.status(200).json(
+              new ResponseFormat(
+                null,
+                false,
+                "Không tìm thấy thông tin post"
+              )
+            )
         }
-        return response.status(200).json(
-          new ResponseFormat(
-            null,
-            false,
-            "Không tìm thấy thông tin post"
-          )
-        )
     }
 
     //get next post
