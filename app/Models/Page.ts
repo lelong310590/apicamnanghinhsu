@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import {BaseModel, BelongsTo, belongsTo, column, HasOne, hasOne} from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
+import Slug from "App/Models/Slug";
 
 export default class Page extends BaseModel {
   @column({ isPrimary: true })
@@ -39,5 +40,10 @@ export default class Page extends BaseModel {
   //declare relationship
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
-  
+
+  @hasOne(() => Slug, {
+    foreignKey: 'referenceId'
+  })
+  public slug: HasOne<typeof Slug>
+
 }

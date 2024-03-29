@@ -3,6 +3,7 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import Post from 'App/Models/Post'
 
 import ResponseFormat from 'App/utils/ResponseFormat'
+import Page from "App/Models/Page";
 
 
 export default class PostsController {
@@ -197,14 +198,14 @@ export default class PostsController {
     public async getPostBySlug({request, response}: HttpContextContract) : Promise<void> {
         const slug = request.params().slug;
 
-        const post: Post | null = await Post.query().whereHas('slug', (subQuery) => {
+        const page: Page | null = await Page.query().whereHas('slug', (subQuery) => {
             subQuery.where('reference_type', 'Botble\\Page\\Models\\Page').where('key', slug)
         }).first()
 
-        if (post !== null) {
+        if (page !== null) {
             return response.status(200).json(
               new ResponseFormat(
-                post,
+                page,
                 true,
                 "Lấy thông tin post thành công"
               )
