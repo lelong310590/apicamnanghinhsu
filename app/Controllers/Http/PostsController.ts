@@ -198,7 +198,7 @@ export default class PostsController {
         const slug = request.params().slug;
 
         const post: Post | null = await Post.query().whereHas('slug', (subQuery) => {
-            subQuery.where('reference_type', 'Botble\\Blog\\Models\\Post').where('key', slug)
+            subQuery.where('reference_type', 'Botble\\Page\\Models\\Page').where('key', slug)
         }).first()
 
         if (post !== null) {
