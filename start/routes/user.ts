@@ -7,5 +7,6 @@ Route.group(() => {
   }).middleware('auth')
   Route.post('/login', 'UsersController.firebaseLogin')
   Route.patch('/update/:userId', 'UsersController.updateUser')
+  Route.post('/login-zalo', 'UsersController.loginZalo')
 }
 ).prefix('user')

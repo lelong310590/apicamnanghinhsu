@@ -1,11 +1,11 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "C9P-API",
+    "title": "Cẩm nang hình sự",
     "version": "2.0.0",
-    "description": "Docs for C9P"
+    "description": "Docs for CNHS"
   },
-  "tags":[
+  "tags": [
     {
       "name": "User"
     },
@@ -22,89 +22,50 @@
       "name": "Feedback"
     }
   ],
-  "paths":{
-    "/user/login":{
-      "post":{
-        "tags":["User"],
-      "consumes":["application/json"],
-      "responses":{
-        "200":{
-          "content":{
-            "application/json":{
-              "schema":{
-                "type":"object",
-                "properties":{
-                  "data":{
-                    "type":"object"
-                  },
-                  "success":{
-                    "type":"boolean"
-                  },
-                  "message":{
-                    "type":"string"
+  "paths": {
+    "/user/login-zalo": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
-          }
-        },
-        "201":{
-          "content":{
-            "application/json":{
-              "schema":{
-                "type":"object",
-                "properties":{
-                  "data":{
-                    "type":"object"
-                  },
-                  "success":{
-                    "type":"boolean"
-                  },
-                  "message":{
-                    "type":"string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "requestBody":{
-        "content":{
-          "application/json":{
-            "schema":{
-              "type":"object",
-              "required":true,
-              "properties":{
-                "uid":{
-                  "type":"string"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-    "/user/update/{id}":{
-      "patch":{
-        "tags":["User"],
-        "consumes":["application/json"],
-        "responses":{
-          "200":{
-            "content":{
-              "application/json":{
-                "schema":{
-                  "type":"object",
-                  "properties":{
-                    "data":{
-                      "type":"object"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
                     },
-                    "success":{
-                      "type":"boolean"
+                    "success": {
+                      "type": "boolean"
                     },
-                    "message":{
-                      "type":"string"
+                    "message": {
+                      "type": "string"
                     }
                   }
                 }
@@ -112,73 +73,202 @@
             }
           }
         },
-        "requestBody":{
-          "content":{
-            "application/json":{
-              "schema":{
-                "type":"object",
-                "required":true,
-                "properties":{
-                  "firstName":{
-                    "type":"string"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": true,
+                "properties": {
+                  "token": {
+                    "type": "string"
                   },
-                  "lastName":{
-                    "type":"string"
+                  "accessToken": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
           }
         },
-        "parameters":[
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": true,
+                "properties": {
+                  "uid": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/update/{id}": {
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": true,
+                "properties": {
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
           {
-            "in":"path",
-            "name":"id",
-            "schema": {"type":"number"},
-            "required":true
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
           }
         ]
       }
     },
-    "/post":{
-      "get":{
-        "tags":["Post"],
-        "consumes":["application/json"],
-        "parameters":[
+    "/post": {
+      "get": {
+        "tags": [
+          "Post"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
           {
-            "in":"query",
-            "name":"page",
-            "schema":{"type":"number"},
-            "required":false
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
           },
           {
-            "in":"query",
-            "name":"input",
-            "schema":{"type":"number"},
-            "required":false
+            "in": "query",
+            "name": "input",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
           },
           {
-            "in":"query",
-            "name":"catId",
-            "schema":{"type":"number"},
-            "required":true
+            "in": "query",
+            "name": "catId",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
           }
         ],
-        "responses":{
-          "200":{
-            "content":{
-              "application/json":{
-                "schema":{
-                  "type":"object",
-                  "properties":{
-                    "data":{
-                      "type":"object"
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
                     },
-                    "success":{
-                      "type":"boolean"
+                    "success": {
+                      "type": "boolean"
                     },
-                    "message":{
-                      "type":"string"
+                    "message": {
+                      "type": "string"
                     }
                   }
                 }
@@ -188,25 +278,29 @@
         }
       }
     },
-    "/post/news":{
-      "get":{
-        "tags":["Post"],
-        "consumes":["application/json"],
-        "responses":{
-          "200":{
-            "content":{
-              "application/json":{
-                "schema":{
-                  "type":"object",
-                  "properties":{
-                    "data":{
-                      "type":"object"
+    "/post/news": {
+      "get": {
+        "tags": [
+          "Post"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
                     },
-                    "success":{
-                      "type":"boolean"
+                    "success": {
+                      "type": "boolean"
                     },
-                    "message":{
-                      "type":"string"
+                    "message": {
+                      "type": "string"
                     }
                   }
                 }
@@ -214,35 +308,41 @@
             }
           }
         },
-        "parameters":[
+        "parameters": [
           {
-            "in":"query",
-            "name":"catId",
-            "schema":{"type":"number"},
-            "required":true
+            "in": "query",
+            "name": "catId",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
           }
         ]
       }
     },
-    "/post/detail":{
-      "get":{
-        "tags":["Post"],
-        "consumes":["application/json"],
-        "responses":{
-          "200":{
-            "content":{
-              "application/json":{
-                "schema":{
-                  "type":"object",
-                  "properties":{
-                    "data":{
-                      "type":"object"
+    "/post/detail": {
+      "get": {
+        "tags": [
+          "Post"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
                     },
-                    "success":{
-                      "type":"boolean"
+                    "success": {
+                      "type": "boolean"
                     },
-                    "message":{
-                      "type":"string"
+                    "message": {
+                      "type": "string"
                     }
                   }
                 }
@@ -250,35 +350,41 @@
             }
           }
         },
-        "parameters":[
+        "parameters": [
           {
-            "in":"query",
-            "name":"postId",
-            "schema":{"type":"number"},
-            "required":true
+            "in": "query",
+            "name": "postId",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
           }
         ]
       }
     },
-    "/post/search":{
-      "get":{
-        "tags":["Post"],
-        "consumes":["application/json"],
-        "responses":{
-          "200":{
-            "content":{
-              "application/json":{
-                "schema":{
-                  "type":"object",
-                  "properties":{
-                    "data":{
-                      "type":"object"
+    "/post/search": {
+      "get": {
+        "tags": [
+          "Post"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
                     },
-                    "success":{
-                      "type":"boolean"
+                    "success": {
+                      "type": "boolean"
                     },
-                    "message":{
-                      "type":"string"
+                    "message": {
+                      "type": "string"
                     }
                   }
                 }
@@ -286,59 +392,73 @@
             }
           }
         },
-        "parameters":[
+        "parameters": [
           {
-            "in":"query",
-            "name":"catId",
-            "schema":{"type":"number"},
-            "required":false
+            "in": "query",
+            "name": "catId",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
           },
           {
-            "in":"query",
-            "name":"typeId",
-            "schema":{"type":"number"},
-            "required":false
+            "in": "query",
+            "name": "typeId",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
           },
           {
-            "in":"query",
-            "name":"content",
-            "schema":{"type":"string"},
-            "required":true
+            "in": "query",
+            "name": "content",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
           },
           {
-            "in":"query",
-            "name":"page",
-            "schema":{"type":"number"},
-            "required":false
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
           },
           {
-            "in":"query",
-            "name":"limit",
-            "schema":{"type":"number"},
-            "required":false
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
           }
         ]
       }
     },
-    "/post/category":{
-      "get":{
-        "tags":["Post"],
-        "consumes":["application/json"],
-        "responses":{
-          "200":{
-            "content":{
-              "application/json":{
-                "schema":{
-                  "type":"object",
-                  "properties":{
-                    "data":{
-                      "type":"object"
+    "/post/category": {
+      "get": {
+        "tags": [
+          "Post"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
                     },
-                    "success":{
-                      "type":"boolean"
+                    "success": {
+                      "type": "boolean"
                     },
-                    "message":{
-                      "type":"string"
+                    "message": {
+                      "type": "string"
                     }
                   }
                 }
@@ -346,47 +466,57 @@
             }
           }
         },
-        "parameters":[
+        "parameters": [
           {
-            "in":"query",
-            "name":"catId",
-            "schema":{"type":"number"},
-            "required":true
+            "in": "query",
+            "name": "catId",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
           },
           {
-            "in":"query",
-            "name":"page",
-            "schema":{"type":"number"},
-            "required":false
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
           },
           {
-            "in":"query",
-            "name":"limit",
-            "schema":{"type":"number"},
-            "required":false
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
           }
         ]
       }
     },
-    "/post/type":{
-      "get":{
-        "tags":["Post"],
-        "consumes":["application/json"],
-        "responses":{
-          "200":{
-            "content":{
-              "application/json":{
-                "schema":{
-                  "type":"object",
-                  "properties":{
-                    "data":{
-                      "type":"object"
+    "/post/type": {
+      "get": {
+        "tags": [
+          "Post"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
                     },
-                    "success":{
-                      "type":"boolean"
+                    "success": {
+                      "type": "boolean"
                     },
-                    "message":{
-                      "type":"string"
+                    "message": {
+                      "type": "string"
                     }
                   }
                 }
@@ -394,47 +524,57 @@
             }
           }
         },
-        "parameters":[
+        "parameters": [
           {
-            "in":"query",
-            "name":"typeId",
-            "schema":{"type":"number"},
-            "required":true
+            "in": "query",
+            "name": "typeId",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
           },
           {
-            "in":"query",
-            "name":"page",
-            "schema":{"type":"number"},
-            "required":false
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
           },
           {
-            "in":"query",
-            "name":"limit",
-            "schema":{"type":"number"},
-            "required":false
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
           }
         ]
       }
     },
-    "/post/tag":{
-      "get":{
-        "tags":["Post"],
-        "consumes":["application/json"],
-        "responses":{
-          "200":{
-            "content":{
-              "application/json":{
-                "schema":{
-                  "type":"object",
-                  "properties":{
-                    "data":{
-                      "type":"object"
+    "/post/tag": {
+      "get": {
+        "tags": [
+          "Post"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
                     },
-                    "success":{
-                      "type":"boolean"
+                    "success": {
+                      "type": "boolean"
                     },
-                    "message":{
-                      "type":"string"
+                    "message": {
+                      "type": "string"
                     }
                   }
                 }
@@ -442,47 +582,57 @@
             }
           }
         },
-        "parameters":[
+        "parameters": [
           {
-            "in":"query",
-            "name":"tagId",
-            "schema":{"type":"number"},
-            "required":true
+            "in": "query",
+            "name": "tagId",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
           },
           {
-            "in":"query",
-            "name":"page",
-            "schema":{"type":"number"},
-            "required":false
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
           },
           {
-            "in":"query",
-            "name":"limit",
-            "schema":{"type":"number"},
-            "required":false
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
           }
         ]
       }
     },
-    "/category":{
-      "get":{
-        "tags":["Category"],
-        "consumes":["application/json"],
-        "responses":{
-          "200":{
-            "content":{
-              "application/json":{
-                "schema":{
-                  "type":"object",
-                  "properties":{
-                    "data":{
-                      "type":"object"
+    "/category": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
                     },
-                    "success":{
-                      "type":"boolean"
+                    "success": {
+                      "type": "boolean"
                     },
-                    "message":{
-                      "type":"string"
+                    "message": {
+                      "type": "string"
                     }
                   }
                 }
@@ -492,25 +642,29 @@
         }
       }
     },
-    "/feedback":{
-      "get":{
-        "tags":["Feedback"],
-        "consumes":["application/json"],
-        "responses":{
-          "201":{
-            "content":{
-              "application/json":{
-                "schema":{
-                  "type":"object",
-                  "properties":{
-                    "data":{
-                      "type":"object"
+    "/feedback": {
+      "get": {
+        "tags": [
+          "Feedback"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
                     },
-                    "success":{
-                      "type":"boolean"
+                    "success": {
+                      "type": "boolean"
                     },
-                    "message":{
-                      "type":"string"
+                    "message": {
+                      "type": "string"
                     }
                   }
                 }
@@ -518,28 +672,28 @@
             }
           }
         },
-        "requestBody":{
-          "content":{
-            "application/json":{
-              "schema":{
-                "type":"object",
-                "required":true,
-                "properties":{
-                  "name":{
-                    "type":"string"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": true,
+                "properties": {
+                  "name": {
+                    "type": "string"
                   },
-                  "phone":{
-                    "type":"string"
+                  "phone": {
+                    "type": "string"
                   },
-                  "email":{
-                    "type":"string"
+                  "email": {
+                    "type": "string"
                   },
-                  "address":{
-                    "type":"string",
-                    "required":false
+                  "address": {
+                    "type": "string",
+                    "required": false
                   },
-                  "main":{
-                    "type":"string"
+                  "main": {
+                    "type": "string"
                   }
                 }
               }
@@ -548,25 +702,29 @@
         }
       }
     },
-    "/type":{
-      "get":{
-        "tags":["Type"],
-        "consumes":["application/json"],
-        "responses":{
-          "200":{
-            "content":{
-              "application/json":{
-                "schema":{
-                  "type":"object",
-                  "properties":{
-                    "data":{
-                      "type":"object"
+    "/type": {
+      "get": {
+        "tags": [
+          "Type"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
                     },
-                    "success":{
-                      "type":"boolean"
+                    "success": {
+                      "type": "boolean"
                     },
-                    "message":{
-                      "type":"string"
+                    "message": {
+                      "type": "string"
                     }
                   }
                 }

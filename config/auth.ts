@@ -32,6 +32,23 @@ const authConfig: AuthConfig = {
     | on cookies/sessions.
     |
     */
+
+    member: {
+      driver: 'oat',
+      provider: {
+        driver: 'lucid',
+        identifierKey: 'id',
+        uids: ['phone', 'email'],
+        model: () => import('App/Models/Member'),
+      },
+      tokenProvider: {
+        type: 'api',
+        driver: 'database',
+        table: 'member_api_tokens',
+        foreignKey: 'member_id',
+      },
+    },
+
     api: {
       driver: 'oat',
 
