@@ -15,7 +15,6 @@ const app = App.initializeApp({ credential: App.credential.cert(converted_servic
 export default class UsersController {
 
   public async loginZalo({request, response, auth}: HttpContextContract) : Promise<void> {
-    const secretKey: string = 'F2sKY2B8WI8Z8H4TIGnG';
     const url: string = `https://graph.zalo.me/v2.0/me/info`
 
     const validateSchema = schema.create({
@@ -34,16 +33,16 @@ export default class UsersController {
       headers: {
         access_token: accessToken,
         code: token,
-        secret_key: secretKey,
-
+        secret_key: 'F2sKY2B8WI8Z8H4TIGnG',
       }
     }
     const loginRequest = await fetch(url, options)
-    if (loginRequest.error === 0) {
+    const loginResponse = await loginRequest.json()
+
+    if (loginResponse.error === 0) {
       // register
-      const createUser = new User()
-      createUser.phone = this.convertPhoneNumber(loginRequest.data.number)
-      await createUser.save()
+      const userPhone = this.convertPhoneNumber(loginResponse.data.number)
+      const createUser = await User.updateOrCreate({phone: userPhone}, {phone: userPhone})
       const token = await auth.use('api').generate(createUser)
       return response.status(201).json(
         {
