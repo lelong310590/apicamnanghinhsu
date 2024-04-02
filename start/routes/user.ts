@@ -8,5 +8,6 @@ Route.group(() => {
   Route.post('/login', 'UsersController.firebaseLogin')
   Route.patch('/update/:userId', 'UsersController.updateUser')
   Route.post('/login-zalo', 'UsersController.loginZalo')
+  Route.get('/info', 'UsersController.info')
 }
 ).prefix('user')

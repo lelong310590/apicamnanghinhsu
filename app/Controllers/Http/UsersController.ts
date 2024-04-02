@@ -1,5 +1,4 @@
 import type {HttpContextContract} from '@ioc:Adonis/Core/HttpContext'
-import User from 'App/Models/User'
 import ResponseFormat from 'App/utils/ResponseFormat'
 import * as Admin from 'firebase-admin/auth'
 import * as App from 'firebase-admin'
@@ -8,11 +7,28 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import serviceAccount from '../../utils/serviceAccountKey.json'
 import fetch from 'node-fetch'
 import {schema} from "@ioc:Adonis/Core/Validator";
+import Member from "App/Models/Member";
 
 const converted_serviceAccount = serviceAccount as ServiceAccount
 const app = App.initializeApp({ credential: App.credential.cert(converted_serviceAccount) })
 
 export default class UsersController {
+
+  /**
+   * 
+   * @param response
+   * @param auth
+   */
+  public async info({response, auth}: HttpContextContract): Promise<void> {
+    const user: Member = auth.use('member').user!
+
+    return response.ok({
+      responseCode: 200,
+      error: false,
+      msg: 'Get user success',
+      data: user,
+    })
+  }
 
   public async loginZalo({request, response, auth}: HttpContextContract) : Promise<void> {
     const url: string = `https://graph.zalo.me/v2.0/me/info`
@@ -42,8 +58,8 @@ export default class UsersController {
     if (loginResponse.error === 0) {
       // register
       const userPhone = this.convertPhoneNumber(loginResponse.data.number)
-      const createUser = await User.updateOrCreate({phone: userPhone}, {phone: userPhone})
-      const token = await auth.use('api').generate(createUser)
+      const createUser = await Member.updateOrCreate({phone: userPhone}, {phone: userPhone})
+      const token = await auth.use('member').generate(createUser)
       return response.status(201).json(
         {
           data: {userData:createUser,token:token},
@@ -65,7 +81,7 @@ export default class UsersController {
     const firstName = request.input('firstName')
     const lastName = request.input('lastName')
     try{
-      const user = await User.findOrFail(userId)
+      const user: Member = await Member.findOrFail(userId)
       user.lastName = lastName
       user.firstName = firstName
       await user.save()
@@ -95,9 +111,9 @@ export default class UsersController {
       const user = getAuth.toJSON()
       const userPhone = user['phoneNumber'].replace('+84', '0')
       if(userPhone){
-        const userData = await User.findBy('phone', userPhone)
+        const userData: Member | null = await Member.findBy('phone', userPhone)
         if (userData) {
-          const token = await auth.use('api').generate(userData)
+          const token = await auth.use('member').generate(userData)
           if(userData.lastName == null){
             return response.status(200).json(
               {
@@ -118,10 +134,10 @@ export default class UsersController {
           )
         }
         else{
-          const createUser = new User()
+          const createUser = new Member()
           createUser.phone = userPhone
           await createUser.save()
-          const token = await auth.use('api').generate(createUser)
+          const token = await auth.use('member').generate(createUser)
           return response.status(201).json(
             {
               data: {userData:createUser,token:token},
@@ -140,9 +156,9 @@ export default class UsersController {
 
   public async logout({response, auth}){
     //revoke token
-    const userId = await auth.use('api').user.id
-    await auth.use('api').revoke()
-    await Database.from('api_tokens').delete().where('user_id', userId)
+    const userId = await auth.use('member').user.id
+    await auth.use('member').revoke()
+    await Database.from('member_api_tokens').delete().where('member_id', userId)
     return response.status(200).send(
       new ResponseFormat(
         true,
@@ -152,9 +168,9 @@ export default class UsersController {
     )
   }
   public async deleteAccount({response, auth}: HttpContextContract){
-    const user = await auth.use('api').user
+    const user = await auth.use('member').user
     if(user){
-      const userData = await User.find(user.id)
+      const userData = await Member.find(user.id)
       if(userData){
         return response.status(200).json(
           new ResponseFormat(
