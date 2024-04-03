@@ -6,8 +6,8 @@ Route.group(() => {
     Route.get('/delete-account','UsersController.deleteAccount')
   }).middleware('auth')
   Route.post('/login', 'UsersController.firebaseLogin')
-  Route.patch('/update/:userId', 'UsersController.updateUser')
+  Route.patch('/update/:userId', 'UsersController.updateUser').middleware('auth:member')
   Route.post('/login-zalo', 'UsersController.loginZalo')
-  Route.get('/info', 'UsersController.info')
+  Route.get('/info', 'UsersController.info').middleware('auth:member')
 }
 ).prefix('user')

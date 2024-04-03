@@ -15,7 +15,7 @@ const app = App.initializeApp({ credential: App.credential.cert(converted_servic
 export default class UsersController {
 
   /**
-   * 
+   *
    * @param response
    * @param auth
    */
@@ -59,7 +59,9 @@ export default class UsersController {
       // register
       const userPhone = this.convertPhoneNumber(loginResponse.data.number)
       const createUser = await Member.updateOrCreate({phone: userPhone}, {phone: userPhone})
-      const token = await auth.use('member').generate(createUser)
+      const token = await auth.use('member').generate(createUser, {
+        expiresIn: '30 days',
+      })
       return response.status(201).json(
         {
           data: {userData:createUser,token:token},
@@ -113,7 +115,9 @@ export default class UsersController {
       if(userPhone){
         const userData: Member | null = await Member.findBy('phone', userPhone)
         if (userData) {
-          const token = await auth.use('member').generate(userData)
+          const token = await auth.use('member').generate(userData, {
+            expiresIn: '30 days',
+          })
           if(userData.lastName == null){
             return response.status(200).json(
               {
@@ -137,7 +141,9 @@ export default class UsersController {
           const createUser = new Member()
           createUser.phone = userPhone
           await createUser.save()
-          const token = await auth.use('member').generate(createUser)
+          const token = await auth.use('member').generate(createUser, {
+            expiresIn: '30 days',
+          })
           return response.status(201).json(
             {
               data: {userData:createUser,token:token},
