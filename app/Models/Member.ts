@@ -26,6 +26,9 @@ export default class Member extends BaseModel {
   @column()
   public numberLoggedIn: number
 
+  @column.dateTime()
+  public vipExpiresAt: DateTime
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
