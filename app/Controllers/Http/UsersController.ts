@@ -155,7 +155,15 @@ export default class UsersController {
         }
         else{
           const createUser = new Member()
-          createUser.phone = userPhone
+
+          if (userPhone) {
+            createUser.phone = userPhone
+          }
+
+          if (userEmail) {
+            createUser.email = userEmail
+          }
+
           await createUser.save()
           const token = await auth.use('member').generate(createUser, {
             expiresIn: '30 days',
