@@ -108,33 +108,49 @@ export default class UsersController {
 
   public async firebaseLogin({request, response, auth}: HttpContextContract){
     const uid = request.input('uid')
+
+    const getAuth = await Admin.getAuth(app).getUser(uid)
+
+    const user = getAuth.toJSON()
+    const userPhone = user['phoneNumber']
+    const userEmail = user['email'];
+
     try{
-      const getAuth = await Admin.getAuth(app).getUser(uid)
-      const user = getAuth.toJSON()
-      const userPhone = user['phoneNumber'].replace('+84', '0')
-      if(userPhone){
-        const userData: Member | null = await Member.findBy('phone', userPhone)
+      if(userPhone || userEmail){
+        const userQuery = Member.query();
+
+        if (userPhone) {
+          const phoneNumber = userPhone.replace('+84', '0')
+          userQuery.orWhere('phone', phoneNumber)
+        }
+
+        if (userEmail) {
+          userQuery.orWhere('email', userEmail)
+        }
+
+        const userData: Member | null = await userQuery.first()
+
         if (userData) {
           const token = await auth.use('member').generate(userData, {
             expiresIn: '30 days',
           })
           if(userData.lastName == null){
             return response.status(200).json(
-              {
-                data: {userData:userData,token:token},
-                isMissingUserInfo: true,
-                success: true,
-                message:"Cần update thông tin"
-              }
+                {
+                  data: {userData:userData,token:token},
+                  isMissingUserInfo: true,
+                  success: true,
+                  message:"Cần update thông tin"
+                }
             )
           }
           return response.status(200).json(
-            {
-              data: {userData:userData,token:token},
-              isMissingUserInfo: false,
-              success: true,
-              message:"Đăng nhập thành công"
-            }
+              {
+                data: {userData:userData,token:token},
+                isMissingUserInfo: false,
+                success: true,
+                message:"Đăng nhập thành công"
+              }
           )
         }
         else{
@@ -145,12 +161,12 @@ export default class UsersController {
             expiresIn: '30 days',
           })
           return response.status(201).json(
-            {
-              data: {userData:createUser,token:token},
-              isMissingUserInfo: true,
-              success: true,
-              message:"Tạo tài khoản mới thành công, cần update thông tin"
-            }
+              {
+                data: {userData:createUser,token:token},
+                isMissingUserInfo: true,
+                success: true,
+                message:"Tạo tài khoản mới thành công, cần update thông tin"
+              }
           )
         }
       }
