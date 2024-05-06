@@ -64,7 +64,10 @@ export default class UsersController {
       })
       return response.status(201).json(
         {
-          data: {userData:createUser,token:token},
+          data: {
+            userData:createUser,
+            token:token
+          },
           isMissingUserInfo: true,
           success: true,
           message:"Tạo tài khoản mới thành công, cần update thông tin"
@@ -130,6 +133,7 @@ export default class UsersController {
 
         const userData: Member | null = await userQuery.first()
 
+
         if (userData) {
           const token = await auth.use('member').generate(userData, {
             expiresIn: '30 days',
@@ -164,13 +168,25 @@ export default class UsersController {
             createUser.email = userEmail
           }
 
+          createUser.firstName = null;
+          createUser.lastName = null;
+          createUser.lastName = null;
+          createUser.type = 0;
+          createUser.numberLoggedIn = 1;
+          createUser.vipExpiresAt = null;
+
+
           await createUser.save()
+
           const token = await auth.use('member').generate(createUser, {
             expiresIn: '30 days',
           })
           return response.status(201).json(
               {
-                data: {userData:createUser,token:token},
+                data: {
+                  userData:createUser,
+                  token:token
+                },
                 isMissingUserInfo: true,
                 success: true,
                 message:"Tạo tài khoản mới thành công, cần update thông tin"

@@ -9,10 +9,10 @@ export default class Member extends BaseModel {
   public id: number
 
   @column()
-  public firstName: string
+  public firstName: string | null
 
   @column()
-  public lastName: string
+  public lastName: string | null
 
   @column()
   public email: string
@@ -27,7 +27,7 @@ export default class Member extends BaseModel {
   public numberLoggedIn: number
 
   @column.dateTime()
-  public vipExpiresAt: DateTime
+  public vipExpiresAt: DateTime | null
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
