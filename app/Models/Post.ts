@@ -32,7 +32,7 @@ export default class Post extends BaseModel {
     public image: string | null
 
     @column()
-    public view: number
+    public views: number
 
     @column()
     public formatType: string | null

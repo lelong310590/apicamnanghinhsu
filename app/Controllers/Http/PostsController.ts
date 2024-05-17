@@ -203,6 +203,7 @@ export default class PostsController {
         }).first()
 
         if (page !== null) {
+            
             return response.status(200).json(
               new ResponseFormat(
                 page,
@@ -230,6 +231,14 @@ export default class PostsController {
           .preload('type')
           .select(["*", Database.raw(`(SELECT min(id) from posts where id >${postId}) as next_id, (SELECT max(id) from posts where id <${postId}) as prev_id`)]).where('id', postId)
         if (post.length != 0) {
+
+            let singlePost: Post = post[0];
+            singlePost.merge({
+                views: singlePost.views + 1
+            })
+
+            await singlePost.save()
+
             return response.status(200).json(
               new ResponseFormat(
                 post,
