@@ -203,7 +203,7 @@ export default class PostsController {
         }).first()
 
         if (page !== null) {
-            
+
             return response.status(200).json(
               new ResponseFormat(
                 page,
